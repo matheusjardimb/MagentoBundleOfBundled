@@ -1484,7 +1484,12 @@ class Mage_Adminhtml_Model_Sales_Order_Create extends Varien_Object implements M
 	{
 		foreach ($this->getQuote()->getAllItems() as $item) {
 			$options = array();
+			// 			 TODO pay attention to this class Mage_Bundle_Model_Product_Type
 			$productOptions = $item->getProduct()->getTypeInstance(true)->getOrderOptions($item->getProduct());
+
+			error_log("0PQI " . $item->getProduct()->getSku() . "\n", 3, "c:\my-errors.log");
+			// 			error_log("1PQI " . print_r($productOptions, true) . "\n", 3, "c:\my-errors.log");
+
 			if ($productOptions) {
 				$productOptions['info_buyRequest']['options'] = $this->_prepareOptionsForRequest($item);
 				$options = $productOptions;
@@ -1508,6 +1513,11 @@ class Mage_Adminhtml_Model_Sales_Order_Create extends Varien_Object implements M
 		$this->_prepareCustomer();
 		$this->_validate();
 		$quote = $this->getQuote();
+
+		// 		foreach ($this->getQuote()->getAllItems() as $item) {
+		// 			error_log("CO " . $item->getProduct()->getSku() . "\n", 3, "c:\my-errors.log");
+		// 		}
+
 		$this->_prepareQuoteItems();
 
 		$service = Mage::getModel('sales/service_quote', $quote);

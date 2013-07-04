@@ -887,7 +887,7 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
      */
     public function addProductAdvanced(Mage_Catalog_Model_Product $product, $request = null, $processMode = null)
     {
-    	error_log("APA " . print_r($product, true) . "\n", 3, "c:\my-errors.log");
+//     	error_log("APA " . print_r($product, true) . "\n", 3, "c:\my-errors.log");
     	
         if ($request === null) {
             $request = 1;

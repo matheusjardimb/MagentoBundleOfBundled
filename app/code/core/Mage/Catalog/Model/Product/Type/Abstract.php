@@ -315,8 +315,8 @@ abstract class Mage_Catalog_Model_Product_Type_Abstract
 	 */
 	protected function _prepareProduct(Varien_Object $buyRequest, $product, $processMode)
 	{
-		error_log("PP " . $product->getId() . "\n", 3, "c:\my-errors.log");
-			
+		//error_log("PP " . $product->getId() . "\n", 3, "c:\my-errors.log");
+
 		$product = $this->getProduct($product);
 		/* @var Mage_Catalog_Model_Product $product */
 		// try to add custom options
@@ -325,7 +325,7 @@ abstract class Mage_Catalog_Model_Product_Type_Abstract
 		} catch (Mage_Core_Exception $e) {
 			return $e->getMessage();
 		}
-		
+
 		if (is_string($options)) {
 			return $options;
 		}
@@ -524,7 +524,7 @@ abstract class Mage_Catalog_Model_Product_Type_Abstract
 	protected function _prepareOptions(Varien_Object $buyRequest, $product, $processMode)
 	{
 		// 		error_log("PO " . $product->getId() . "\n", 3, "c:\my-errors.log");
-			
+
 		$transport = new StdClass;
 		$transport->options = array();
 		$options = $this->getProduct($product)->getOptions();

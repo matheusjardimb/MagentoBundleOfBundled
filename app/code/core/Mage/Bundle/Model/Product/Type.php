@@ -526,11 +526,12 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 	 */
 	protected function _prepareProduct(Varien_Object $buyRequest, $product, $processMode)
 	{
-		error_log("-- PrepareProduct Start --\n", 3, "c:\my-errors.log");
-		$e = new Exception();
-		error_log($e->getTraceAsString() . "\n", 3, "c:\my-errors.log");
-			
+		// 		error_log("-- PrepareProduct Start --\n", 3, "c:\my-errors.log");
+		// 		$e = new Exception();
+		// 		error_log($e->getTraceAsString() . "\n", 3, "c:\my-errors.log");
+
 		$result = parent::_prepareProduct($buyRequest, $product, $processMode);
+		// 		error_log("PPRes " . print_r($result,true) . "\n", 3, "c:\my-errors.log");
 
 		if (is_string($result)) {
 			return $result;
@@ -544,6 +545,19 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 		$_appendAllSelections = (bool)$product->getSkipCheckRequiredOption() || $skipSaleableCheck;
 
 		$options = $buyRequest->getBundleOption();
+		// 		$options  = array(2=>array(3,4),1=>array(1,2));
+
+		if ($product->getId() == 5){
+			$options = array(
+					2 => array(
+							0 => 3,
+							1 => 4)
+			);
+		}
+		// 		error_log("1PPO " . print_r($options, true) . "\n", 3, "c:\my-errors.log");
+		// 		error_log("2PPO " . $product->getId(). "\n", 3, "c:\my-errors.log");
+
+
 		if (is_array($options)) {
 			$options = array_filter($options, 'intval');
 			$qtys = $buyRequest->getBundleOptionQty();
@@ -557,6 +571,7 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 			if (empty($optionIds) && $isStrictProcessMode) {
 				return Mage::helper('bundle')->__('Please select options for product.');
 			}
+			// 			error_log("5PPO " . print_r($optionIds, true) . "\n", 3, "c:\my-errors.log");
 
 			$product->getTypeInstance(true)->setStoreFilter($product->getStoreId(), $product);
 			$optionsCollection = $this->getOptionsCollection($product);
@@ -583,7 +598,7 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 				}
 			}
 
-			;
+			// 			error_log("PPSI " . print_r($selectionIds, true) . "\n", 3, "c:\my-errors.log");
 			// 			error_log("PPSI " . print_r($selectionIds, true) . "\n", 3, "c:\my-errors.log");
 			// 			error_log("PPThis " . $this->getProduct($product)->getId().' '. $this->getProduct($product)->getSku() . "\n", 3, "c:\my-errors.log");
 
@@ -643,7 +658,7 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 		if (count($selections) > 0 || !$isStrictProcessMode) {
 			$uniqueKey = array($product->getId());
 			$selectionIds = array();
-				
+
 			// Shuffle selection array by option position
 			usort($selections, array($this, 'shakeSelections'));
 
@@ -676,13 +691,9 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 						'option_label'  => $selection->getOption()->getTitle(),
 						'option_id'     => $selection->getOption()->getId()
 				);
-				
-				error_log("PPSel " . print_r($selection, true) . "\n", 3, "c:\my-errors.log");
 
 				$_result = $selection->getTypeInstance(true)->prepareForCart($buyRequest, $selection);
-				
-				error_log("PPRes " . print_r($_result, true) . "\n", 3, "c:\my-errors.log");
-				
+
 				if (is_string($_result) && !is_array($_result)) {
 					return $_result;
 				}
@@ -798,6 +809,11 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 	 */
 	public function getOrderOptions($product = null)
 	{
+		error_log("--- --- GOO --- --- \n", 3, "c:\my-errors.log");
+		
+		$e = new Exception();
+		error_log($e->getTraceAsString() . "\n", 3, "c:\my-errors.log");
+		
 		$optionArr = parent::getOrderOptions($product);
 
 		$bundleOptions = array();
@@ -807,7 +823,24 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 		if ($product->hasCustomOptions()) {
 			$customOption = $product->getCustomOption('bundle_option_ids');
 			$optionIds = unserialize($customOption->getValue());
+				
+			if ($product->getId() == 5){
+				$optionIds = array(2);
+			}
+
+			error_log("1GOO " . print_r($product->getId(), true) . "\n", 3, "c:\my-errors.log");
+			error_log("2GOO " . print_r($optionIds, true) . "\n", 3, "c:\my-errors.log");
+			// 			if($product->getId() == 5){
+			// 				$optionIds = array(
+			// 						2 => array(
+			// 								0 => 3,
+			// 								1 => 4)
+			// 				);
+			// 			}
+
 			$options = $this->getOptionsByIds($optionIds, $product);
+			// 			error_log("3GOO " . print_r($options, true) . "\n", 3, "c:\my-errors.log");
+
 			$customOption = $product->getCustomOption('bundle_selection_ids');
 			$selectionIds = unserialize($customOption->getValue());
 			$selections = $this->getSelectionsByIds($selectionIds, $product);
@@ -818,6 +851,9 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 						$price = $product->getPriceModel()->getSelectionFinalTotalPrice($product, $selection, 0,
 								$selectionQty->getValue()
 						);
+						error_log("4GOO " . print_r($selectionQty->getValue(), true) . "\n", 3, "c:\my-errors.log");
+						error_log("41GOO " . $price . "\n", 3, "c:\my-errors.log");
+
 
 						$option = $options->getItemById($selection->getOptionId());
 						if (!isset($bundleOptions[$option->getId()])) {
@@ -837,6 +873,7 @@ class Mage_Bundle_Model_Product_Type extends Mage_Catalog_Model_Product_Type_Abs
 					}
 				}
 			}
+			error_log("5GOO " . print_r($bundleOptions, true) . "\n", 3, "c:\my-errors.log");
 		}
 
 		$optionArr['bundle_options'] = $bundleOptions;
